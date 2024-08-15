@@ -18,12 +18,8 @@ import * as mongoose from 'mongoose';
 
 export const OrderSchema = new mongoose.Schema(
   {
-    orderProducts: [
-      {
-        product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' }, // Referência ao Product
-        quantity: { type: Number, required: true }, // Quantidade do produto
-      },
-    ],
+    orderItems: [{ type: mongoose.Schema.Types.ObjectId, ref: 'OrderItem' }],
+
     orderTime: { type: Date, default: Date.now }, // Tempo do pedido
   },
   { timestamps: true, collection: 'orders' },

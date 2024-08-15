@@ -7,7 +7,7 @@ import { ProductRepository } from './repository/product.repository';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: 'product', schema: ProductSchema }]),
+    MongooseModule.forFeature([{ name: 'Product', schema: ProductSchema }]),
   ],
   controllers: [ProductController],
   providers: [ProductService, ProductRepository],

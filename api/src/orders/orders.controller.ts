@@ -13,6 +13,7 @@ import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { validationsParamsPipe } from './commom/pipes/validations-params-pipe.pipe';
+import { CreateOrderItemDto } from './dto/create-orderItem.dto';
 // import { UpdateOrderStatusDTO } from './dto/update-orderStatus.dto';
 
 @Controller('/orders')
@@ -24,6 +25,11 @@ export class OrdersController {
     return this.ordersService.createOrder(createOrderDto);
   }
 
+  @Post('/orderItem')
+  createOrderItem(@Body() createOrderItemDto: CreateOrderItemDto) {
+    return this.ordersService.createOrderItem(createOrderItemDto);
+  }
+
   @Get('/')
   async findAllOrders() {
     return await this.ordersService.findAllOrders();
@@ -32,6 +38,11 @@ export class OrdersController {
   @Get(':id')
   async findOrderById(@Param('id', validationsParamsPipe) id: string) {
     return await this.ordersService.findOrderById(id);
+  }
+
+  @Get('item/:id')
+  async findOrderItemById(@Param('id', validationsParamsPipe) id: string) {
+    return await this.ordersService.updateProductQuantity(id);
   }
 
   // @Patch('/status/:id')

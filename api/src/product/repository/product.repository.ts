@@ -11,7 +11,7 @@ import { UpdateProductDto } from '../dto/update-product.dto';
 @Injectable()
 export class ProductRepository {
   constructor(
-    @InjectModel('product') private readonly productModel: Model<IProduct>,
+    @InjectModel('Product') private readonly productModel: Model<IProduct>,
   ) {}
 
   async getAllProducts(): Promise<IProduct[]> {

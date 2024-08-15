@@ -4,6 +4,11 @@ import { IProduct } from 'src/product/interfaces/Product.interface';
 import { OrderPaymentMethod } from '../enums/order-payment-method.enum';
 
 export interface IOrder extends Document {
-  orderProducts: { product: IProduct; quantity: number }[]; // Corrigido para um array
+  orderItems: IOrderItem[];
   orderTime: Date;
+}
+
+export interface IOrderItem {
+  product: IProduct;
+  quantity: number;
 }

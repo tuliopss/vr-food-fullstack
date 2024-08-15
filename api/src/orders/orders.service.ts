@@ -1,3 +1,4 @@
+import { CreateOrderItemDto } from './dto/create-orderItem.dto';
 import { ProductService } from './../product/product.service';
 import {
   BadRequestException,
@@ -15,6 +16,7 @@ import { OrderPaymentStatus } from './enums/order-pay-status.enum';
 import { OrderRepository } from './repository/order.repository';
 import { ProductRepository } from 'src/product/repository/product.repository';
 import { IProduct } from 'src/product/interfaces/Product.interface';
+import { IOrderItem } from './interfaces/orderItem.interface';
 @Injectable()
 export class OrdersService {
   constructor(
@@ -22,43 +24,36 @@ export class OrdersService {
     private readonly productService: ProductService,
   ) {}
 
-  async createOrder(createOrderDto: CreateOrderDto): Promise<void> {
+  async createOrder(createOrderDto: CreateOrderDto): Promise<IOrder> {
     try {
-      createOrderDto.orderProducts || [];
-
-      const orderProducts = await Promise.all(
-        createOrderDto.orderProducts.map(async (order) => {
-          const product = await this.productService.getProductById(
-            order.idProduct,
-          );
-
-          return {
-            idProduct: product._id.toString(),
-            quantity: order.quantity,
-          };
+      const orderItems = await Promise.all(
+        createOrderDto.orderItems.map(async (itemDto) => {
+          return await this.createOrderItem(itemDto);
         }),
       );
 
-      for (const product of orderProducts) {
-        await this.checkProductQuantity(
-          product.idProduct,
-          // order.product._id.toString(),
-          product.quantity,
-        );
-      }
-      createOrderDto.orderTime = new Date();
+      createOrderDto.orderItems = orderItems;
 
-      createOrderDto.orderProducts = orderProducts;
-
-      const newOrder = await this.orderRepository.createOrder(createOrderDto);
-      console.log(newOrder);
-      newOrder.orderProducts.forEach(async (product) => {
+      createOrderDto.orderItems.forEach(async (orderItem) => {
         await this.productService.updateProductQuantitys(
-          product.product.toString(),
-          product.quantity,
+          orderItem.idProduct.toString(),
+          orderItem.quantity,
         );
       });
-      // return await this.productService.updateProduct
+
+      return await this.orderRepository.createOrder(createOrderDto);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async createOrderItem(item: any) {
+    try {
+      const product = await this.productService.getProductById(item.idProduct);
+
+      await this.checkProductQuantity(product._id.toString(), item.quantity);
+
+      return await this.orderRepository.createOrderItem(item);
     } catch (error) {
       throw new BadRequestException(error.message);
     }
@@ -94,6 +89,22 @@ export class OrdersService {
       throw new BadRequestException(error.message);
     }
   }
+  async findOrderItemById(id: string): Promise<IOrderItem> {
+    try {
+      if (!isValidObjectId(id)) {
+        throw new BadRequestException('ID inválido.');
+      }
+      const orderItem = await this.orderRepository.getOrderItemById(id);
+
+      if (!orderItem) {
+        throw new NotFoundException('Pedido não encontrado...');
+      }
+
+      return orderItem;
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
 
   // async updateOrderStatus(
   //   id: string,
@@ -119,5 +130,17 @@ export class OrdersService {
       );
     }
     return true;
+  }
+
+  async updateProductQuantity(idOrderItem: string) {
+    const orderItem = await this.findOrderItemById(idOrderItem);
+    const product = await this.productService.getProductById(
+      orderItem.idProduct.toString(),
+    );
+
+    await this.productService.updateProductQuantitys(
+      product._id.toString(),
+      orderItem.quantity,
+    );
   }
 }
