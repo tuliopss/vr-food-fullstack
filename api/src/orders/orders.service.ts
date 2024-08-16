@@ -27,8 +27,8 @@ export class OrdersService {
   async createOrder(createOrderDto: CreateOrderDto): Promise<IOrder> {
     try {
       const orderItems = await Promise.all(
-        createOrderDto.orderItems.map(async (itemDto) => {
-          return await this.createOrderItem(itemDto);
+        createOrderDto.orderItems.map((itemDto) => {
+          return this.createOrderItem(itemDto);
         }),
       );
 
@@ -53,6 +53,8 @@ export class OrdersService {
 
       await this.checkProductQuantity(product._id.toString(), item.quantity);
 
+      const totalPriceItem = product.price * item.quantity;
+      item.totalPrice = totalPriceItem;
       return await this.orderRepository.createOrderItem(item);
     } catch (error) {
       throw new BadRequestException(error.message);
@@ -97,7 +99,7 @@ export class OrdersService {
       const orderItem = await this.orderRepository.getOrderItemById(id);
 
       if (!orderItem) {
-        throw new NotFoundException('Pedido não encontrado...');
+        throw new NotFoundException('Pedido item não encontrado...');
       }
 
       return orderItem;
@@ -106,13 +108,13 @@ export class OrdersService {
     }
   }
 
-  // async updateOrderStatus(
-  //   id: string,
-  //   updateOrderStatusDto: UpdateOrderStatusDTO,
-  // ) {
-  //   try {
-  //   } catch (error) {}
-  // }
+  async updateOrder(id: string, updateOrderDto: UpdateOrderDto) {
+    try {
+      await this.findOrderById(id);
+
+      return await this.orderRepository.updateOrder(id, updateOrderDto);
+    } catch (error) {}
+  }
 
   async cancelOrder(id: string) {}
 
@@ -142,5 +144,25 @@ export class OrdersService {
       product._id.toString(),
       orderItem.quantity,
     );
+  }
+
+  async calcTotalPriceOrder(idOrder: string) {
+    try {
+      const order = await this.findOrderById(idOrder);
+      // console.log('pedido', order);
+      const items = await Promise.all(
+        order.orderItems.map(async (item) => {
+          return await this.findOrderItemById(item.toString());
+        }),
+      );
+
+      items.map((item) => {
+        order.totalPrice += item.totalPrice;
+      });
+
+      await this.updateOrder(idOrder, order);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 }

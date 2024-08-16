@@ -45,6 +45,11 @@ export class OrdersController {
     return await this.ordersService.updateProductQuantity(id);
   }
 
+  @Patch('bill/:id')
+  async calcTotalPriceOrder(@Param('id', validationsParamsPipe) id: string) {
+    return await this.ordersService.calcTotalPriceOrder(id);
+  }
+
   // @Patch('/status/:id')
   // @UsePipes(ValidationPipe)
   // async updateOrderStatus(

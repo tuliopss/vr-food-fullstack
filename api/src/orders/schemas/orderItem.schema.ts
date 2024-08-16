@@ -7,6 +7,7 @@ export const OrderItemSchema = new mongoose.Schema(
       ref: 'Product',
     },
     quantity: { type: Number },
+    totalPrice: { type: Number },
   },
   { timestamps: true, collection: 'ordersItems' },
 );

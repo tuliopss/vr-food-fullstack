@@ -6,6 +6,7 @@ import mongoose, { Model } from 'mongoose';
 import { ProductService } from 'src/product/product.service';
 import { CreateOrderItemDto } from '../dto/create-orderItem.dto';
 import { IOrderItem } from '../interfaces/orderItem.interface';
+import { UpdateOrderDto } from '../dto/update-order.dto';
 // import { EmployeeDto } from 'src/dtos/employee.dto';
 // import { UpdateEmployeeDto } from 'src/dtos/updateEmployee.dto';
 // import { IEmployee } from 'src/interfaces/employee.interface';
@@ -57,14 +58,11 @@ export class OrderRepository {
     return await this.orderModel.findOneAndDelete({ _id: id });
   }
 
-  //   async updateOrder(
-  //     id: string,
-  //     newOrder: UpdateOrderDto,
-  //   ): Promise<IOrder> {
-  //     return await this.orderModel.findByIdAndUpdate(
-  //       { _id: id },
-  //       { $set: newProduct },
-  //       { new: true },
-  //     );
-  //   }
+  async updateOrder(id: string, newOrder: UpdateOrderDto): Promise<IOrder> {
+    return await this.orderModel.findByIdAndUpdate(
+      { _id: id },
+      { $set: newOrder },
+      { new: true },
+    );
+  }
 }
