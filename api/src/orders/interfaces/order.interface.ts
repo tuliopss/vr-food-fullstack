@@ -8,6 +8,8 @@ export interface IOrder extends Document {
   orderItems: IOrderItem[];
   orderTime: Date;
   totalPrice: number;
+  paymentStatus: OrderPaymentStatus;
+  paymentMethod: OrderPaymentMethod;
 }
 
 // export interface IOrderItem {

@@ -1,5 +1,5 @@
+import { OrderPaymentStatus } from './../enums/order-pay-status.enum';
 import { IProduct } from 'src/product/interfaces/Product.interface';
-import { OrderPaymentStatus } from '../enums/order-pay-status.enum';
 import { OrderPaymentMethod } from '../enums/order-payment-method.enum';
 import { IOrderItem } from '../interfaces/orderItem.interface';
 
@@ -18,4 +18,6 @@ import { IOrderItem } from '../interfaces/orderItem.interface';
 export class CreateOrderDto {
   orderItems: IOrderItem[];
   orderTime: Date;
+  paymentMethod: OrderPaymentMethod;
+  paymentStatus: OrderPaymentStatus;
 }

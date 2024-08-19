@@ -21,11 +21,15 @@ export class OrderRepository {
   ) {}
 
   async getAllOrders(): Promise<IOrder[]> {
-    return await this.orderModel.find({}, { __v: false }).exec();
+    return await this.orderModel
+      .find({ __v: false })
+      .populate([{ path: 'orderItems', model: 'orderItem' }]);
   }
 
   async getOrderById(id: string): Promise<IOrder> {
-    return await this.orderModel.findById(id, { __v: false });
+    return await this.orderModel
+      .findById(id, { __v: false })
+      .populate([{ path: 'orderItems', model: 'orderItem' }]);
   }
 
   async getOrderItemById(id: string): Promise<IOrderItem> {

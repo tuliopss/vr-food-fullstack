@@ -1,0 +1,26 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2em;
+  /* border-bottom: 1px solid #fff; */
+}
+
+button {
+  border-radius: 8px;
+  color: #fff;
+  border: 1px solid transparent;
+  padding: 0.2em 0.5em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #26a739;
+  cursor: pointer;
+}
+
+.productsContainer {
+  margin: 1.2em;
+}
+
+.productsList {
+  margin-top: 2em;
+}
