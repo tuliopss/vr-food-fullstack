@@ -13,4 +13,5 @@
 
 .productActions svg {
   margin: 0.3em;
+  cursor: pointer;
 }

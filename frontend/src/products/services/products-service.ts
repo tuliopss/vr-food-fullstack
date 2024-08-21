@@ -26,7 +26,20 @@ const createProduct = async (data: IProduct): Promise<IProduct | undefined> => {
   }
 };
 
+const deleteProduct = async (id: string): Promise<void> => {
+  const config = requestConfig("DELETE", null);
+
+  try {
+    const res = await fetch(`${apiUrl}/products/${id}`, config);
+
+    return res.json();
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const productsService = {
   getAllProducts,
   createProduct,
+  deleteProduct,
 };

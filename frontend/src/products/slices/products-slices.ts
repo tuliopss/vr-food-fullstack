@@ -45,6 +45,21 @@ export const createProduct = createAsyncThunk<IProduct, IProduct>(
   }
 );
 
+export const deleteProduct = createAsyncThunk(
+  "product/delete",
+  async (id: string, thunkAPI) => {
+    const response = await productsService.deleteProduct(id);
+    return id;
+
+    // if (!response) {
+    //   return thunkAPI.rejectWithValue("Erro ao excluir item");
+    // }
+
+    console.log(response);
+    return response;
+  }
+);
+
 export const productSlice = createSlice({
   name: "product",
   initialState,
@@ -65,6 +80,7 @@ export const productSlice = createSlice({
         state.success = true;
         state.error = false;
         state.products = action.payload;
+        console.log("action", action.payload);
       })
       .addCase(createProduct.rejected, (state, action) => {
         state.loading = false;
@@ -82,6 +98,25 @@ export const productSlice = createSlice({
         state.success = true;
         state.error = false;
         state.product = action.payload;
+      })
+      .addCase(deleteProduct.rejected, (state, action) => {
+        state.loading = false;
+        state.success = false;
+        state.error = true;
+        state.product = {};
+      })
+      .addCase(deleteProduct.pending, (state, action) => {
+        state.loading = true;
+        state.success = false;
+        state.error = false;
+      })
+      .addCase(deleteProduct.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = true;
+        state.error = false;
+        state.products = state.products.filter((product) => {
+          return product._id !== action.payload;
+        });
       });
   },
 });

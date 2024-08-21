@@ -2,7 +2,10 @@ import React, { useEffect } from "react";
 import styles from "./Products.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
-import { getAllProducts } from "../../products/slices/products-slices";
+import {
+  deleteProduct,
+  getAllProducts,
+} from "../../products/slices/products-slices";
 import ProductCard from "../../components/ProductCard/ProductCard";
 import ModalAddProduct from "../../components/ModalAddProduct/ModalAddProduct";
 
@@ -19,6 +22,10 @@ const Products = (props: Props) => {
     console.log(products);
   }, [dispatch]);
 
+  const handleDelete = (id: string): void => {
+    dispatch(deleteProduct(id));
+  };
+
   return (
     <div className={styles.productsContainer}>
       <header className={styles.header}>
@@ -28,7 +35,9 @@ const Products = (props: Props) => {
 
       <div className={styles.productsList}>
         {products.length > 0 ? (
-          products.map((product) => <ProductCard product={product} />)
+          products.map((product) => (
+            <ProductCard product={product} handleDelete={handleDelete} />
+          ))
         ) : (
           <h1>Não há itens cadastrados...</h1>
         )}
