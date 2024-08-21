@@ -7,13 +7,26 @@ const getAllProducts = async (): Promise<IProduct[]> => {
   try {
     const res = await fetch(`${apiUrl}/products`, config);
 
-    return (await res.json()) as IProduct[];
+    return await res.json();
   } catch (error) {
     console.log(error);
     return [];
   }
 };
 
+const createProduct = async (data: IProduct): Promise<IProduct | undefined> => {
+  const config = requestConfig("POST", data);
+
+  try {
+    const res = await fetch(`${apiUrl}/products`, config);
+
+    return await res.json();
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const productsService = {
   getAllProducts,
+  createProduct,
 };

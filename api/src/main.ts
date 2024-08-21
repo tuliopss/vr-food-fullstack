@@ -5,7 +5,7 @@ import * as momentTimezone from 'moment-timezone';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
-  app.useGlobalFilters(new AllExceptionsFilter());
+  // app.useGlobalFilters(new AllExceptionsFilter());
 
   Date.prototype.toJSON = () => {
     return momentTimezone(this)

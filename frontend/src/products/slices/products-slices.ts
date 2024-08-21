@@ -10,6 +10,7 @@ interface ProductState {
   loading: boolean;
   message: string | null;
 }
+
 const initialState: ProductState = {
   products: [],
   product: {},
@@ -20,10 +21,27 @@ const initialState: ProductState = {
 };
 export const getAllProducts = createAsyncThunk<IProduct[]>(
   "product/getAll",
-  async () => {
-    const data = await productsService.getAllProducts();
-    console.log(data);
-    return data;
+  async (_, thunkAPI) => {
+    const response = await productsService.getAllProducts();
+
+    // if (response.error) {
+    //   return thunkAPI.rejectWithValue(response.error.message);
+    // }
+    console.log(response);
+    return response;
+  }
+);
+
+export const createProduct = createAsyncThunk<IProduct, IProduct>(
+  "product/create",
+  async (data, thunkAPI) => {
+    const response = await productsService.createProduct(data);
+
+    if (!response) {
+      return thunkAPI.rejectWithValue("Erro ao cadastrar item");
+    }
+    console.log(response);
+    return response;
   }
 );
 
@@ -42,15 +60,29 @@ export const productSlice = createSlice({
         state.loading = true;
         state.error = false;
       })
-      .addCase(
-        getAllProducts.fulfilled,
-        (state, action: PayloadAction<IProduct[]>) => {
-          state.loading = false;
-          state.success = true;
-          state.error = false;
-          state.products = action.payload;
-        }
-      );
+      .addCase(getAllProducts.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = true;
+        state.error = false;
+        state.products = action.payload;
+      })
+      .addCase(createProduct.rejected, (state, action) => {
+        state.loading = false;
+        state.success = false;
+        state.error = true;
+        state.product = {};
+      })
+      .addCase(createProduct.pending, (state, action) => {
+        state.loading = true;
+        state.success = false;
+        state.error = false;
+      })
+      .addCase(createProduct.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = true;
+        state.error = false;
+        state.product = action.payload;
+      });
   },
 });
 

@@ -28,12 +28,12 @@ export class ProductService {
       const products = await this.productRepository.getAllProducts();
 
       if (products.length === 0) {
-        throw new NotFoundException(`Não há produtos registrados.`);
+        throw new NotFoundException('Não há produtos cadastrados...');
       }
 
       return products;
     } catch (error) {
-      throw new BadRequestException(error.message);
+      throw new BadRequestException(error);
     }
   }
 

@@ -23,3 +23,13 @@ body {
   background-color: #242424;
   color: #fafafa;
 }
+
+form {
+  display: flex;
+  flex-direction: column;
+  margin: 0.4em;
+}
+
+label {
+  margin-bottom: 0.5em;
+}

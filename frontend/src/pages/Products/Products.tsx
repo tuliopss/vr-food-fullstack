@@ -3,6 +3,8 @@ import styles from "./Products.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { getAllProducts } from "../../products/slices/products-slices";
+import ProductCard from "../../components/ProductCard/ProductCard";
+import ModalAddProduct from "../../components/ModalAddProduct/ModalAddProduct";
 
 type Props = {};
 
@@ -20,16 +22,16 @@ const Products = (props: Props) => {
   return (
     <div className={styles.productsContainer}>
       <header className={styles.header}>
-        <h2>Itens cadastrados</h2>
-        <button>Cadastrar novo item</button>
+        <h2>Itens cadastrados:</h2>
+        <ModalAddProduct />
       </header>
 
       <div className={styles.productsList}>
-        <div>Salgado</div>
-        <div>Salgado</div>
-        <div>Salgado</div>
-        <div>Salgado</div>
-        <div>Salgado</div>
+        {products.length > 0 ? (
+          products.map((product) => <ProductCard product={product} />)
+        ) : (
+          <h1>Não há itens cadastrados...</h1>
+        )}
       </div>
     </div>
   );
