@@ -15,3 +15,7 @@
   margin: 0.3em;
   cursor: pointer;
 }
+
+.productActions {
+  display: flex;
+}

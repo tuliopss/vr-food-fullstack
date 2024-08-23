@@ -7,7 +7,8 @@ import {
   getAllProducts,
 } from "../../products/slices/products-slices";
 import ProductCard from "../../components/ProductCard/ProductCard";
-import ModalAddProduct from "../../components/ModalAddProduct/ModalAddProduct";
+import ModalAddProduct from "../../components/ModalProduct/ModalAddProduct";
+import ModalEditProduct from "../../components/ModalProduct/ModalEditProduct";
 
 type Props = {};
 
@@ -19,7 +20,6 @@ const Products = (props: Props) => {
 
   useEffect(() => {
     dispatch(getAllProducts());
-    console.log(products);
   }, [dispatch]);
 
   const handleDelete = (id: string): void => {

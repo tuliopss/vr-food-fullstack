@@ -27,7 +27,6 @@ export const getAllProducts = createAsyncThunk<IProduct[]>(
     // if (response.error) {
     //   return thunkAPI.rejectWithValue(response.error.message);
     // }
-    console.log(response);
     return response;
   }
 );
@@ -40,7 +39,23 @@ export const createProduct = createAsyncThunk<IProduct, IProduct>(
     if (!response) {
       return thunkAPI.rejectWithValue("Erro ao cadastrar item");
     }
-    console.log(response);
+    return response;
+  }
+);
+export const editProduct = createAsyncThunk<IProduct, IProduct>(
+  "product/edit",
+  async (productData, thunkAPI) => {
+    const data: IProduct = {
+      _id: productData._id,
+      title: productData.title,
+      quantity: productData.quantity,
+      price: productData.price,
+    };
+    const response = await productsService.editProduct(productData._id, data);
+
+    if (!response) {
+      return thunkAPI.rejectWithValue("Erro ao cadastrar item");
+    }
     return response;
   }
 );
@@ -55,7 +70,6 @@ export const deleteProduct = createAsyncThunk(
     //   return thunkAPI.rejectWithValue("Erro ao excluir item");
     // }
 
-    console.log(response);
     return response;
   }
 );
@@ -80,7 +94,6 @@ export const productSlice = createSlice({
         state.success = true;
         state.error = false;
         state.products = action.payload;
-        console.log("action", action.payload);
       })
       .addCase(createProduct.rejected, (state, action) => {
         state.loading = false;
@@ -117,6 +130,36 @@ export const productSlice = createSlice({
         state.products = state.products.filter((product) => {
           return product._id !== action.payload;
         });
+      })
+      .addCase(editProduct.rejected, (state, action) => {
+        state.loading = false;
+        state.success = false;
+        state.error = true;
+        state.product = {};
+      })
+      .addCase(editProduct.pending, (state, action) => {
+        state.loading = true;
+        state.success = false;
+        state.error = false;
+      })
+      .addCase(editProduct.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = true;
+        state.error = false;
+        state.product = action.payload;
+        state.products = state.products.map((product) => {
+          if (product._id === action.payload._id) {
+            return { ...product, ...action.payload };
+          }
+
+          return product;
+        });
+        // state.products = state.products.map((product) => {
+        //   if (product._id !== action.payload._id) {
+        //     return { ...product, ...action.payload };
+        //   }
+        //   return product;
+        // });
       });
   },
 });

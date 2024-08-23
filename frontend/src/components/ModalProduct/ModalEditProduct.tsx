@@ -2,10 +2,13 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { AppDispatch, RootState } from "../../store";
 import { useDispatch, useSelector } from "react-redux";
-import { createProduct } from "../../products/slices/products-slices";
+import {
+  createProduct,
+  editProduct,
+} from "../../products/slices/products-slices";
 import { IProduct } from "../../products/interfaces/IProduct";
 
 const style = {
@@ -21,45 +24,49 @@ const style = {
   p: 4,
 };
 
-export default function ModalAddProduct() {
+type Props = {
+  iconEdit: React.ReactNode;
+  product: IProduct;
+};
+
+export default function ModalEditProduct({ iconEdit, product }: Props) {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const dispatch: AppDispatch = useDispatch();
 
-  const initialProduct: IProduct = {
-    title: "",
-    quantity: 1,
-    price: 0,
-  };
+  const [title, setTitle] = useState<string>("");
+  const [quantity, setQuantity] = useState<number>(0);
+  const [price, setPrice] = useState<number>(0);
+
   //   const { products } = useSelector((state: RootState) => state.product);
 
-  const [product, setProduct] = useState<IProduct>(initialProduct);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-
-    const parseValue =
-      name === "price" || name === "quantity" ? parseFloat(value) : value;
-
-    setProduct({
-      ...product,
-      [name]: parseValue,
-    });
-    console.log(product);
-  };
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    const newProduct = await dispatch(createProduct(product));
-
-    if (newProduct) {
-      handleClose();
+  useEffect(() => {
+    if (product) {
+      setTitle(product.title);
+      setQuantity(product.quantity);
+      setPrice(product.price);
     }
-    e.preventDefault();
+  }, [product]);
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    const productData = {
+      _id: product._id,
+      title: title,
+      quantity: quantity,
+      price: price,
+    };
+
+    dispatch(editProduct(productData));
+    console.log(productData);
+    handleClose();
   };
 
   return (
     <div>
-      <button onClick={handleOpen}>Cadastrar novo item</button>
+      <div onClick={handleOpen} style={{ cursor: "pointer" }}>
+        {iconEdit}
+      </div>
       <Modal
         open={open}
         onClose={handleClose}
@@ -76,8 +83,9 @@ export default function ModalAddProduct() {
                 type='text'
                 placeholder='Ex: Salgado de calabresa'
                 name='title'
-                onChange={handleChange}
-                required
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+
                 // value={title || ""}
               />
             </label>
@@ -88,8 +96,8 @@ export default function ModalAddProduct() {
                 type='number'
                 min={1}
                 name='quantity'
-                defaultValue={initialProduct.quantity}
-                onChange={handleChange}
+                value={quantity}
+                onChange={(e) => setQuantity(parseInt(e.target.value))}
               />
             </label>
 
@@ -97,14 +105,13 @@ export default function ModalAddProduct() {
               <span>Preço: </span>
               <input
                 type='number'
-                defaultValue={0}
                 name='price'
-                onChange={handleChange}
-                required
+                value={price}
+                onChange={(e) => setPrice(parseFloat(e.target.value))}
               />
             </label>
 
-            <button type='submit'>Cadastrar</button>
+            <button type='submit'>Editar</button>
           </form>
         </Box>
       </Modal>
