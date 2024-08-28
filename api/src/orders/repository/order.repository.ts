@@ -7,6 +7,7 @@ import { ProductService } from 'src/product/product.service';
 import { CreateOrderItemDto } from '../dto/create-orderItem.dto';
 import { IOrderItem } from '../interfaces/orderItem.interface';
 import { UpdateOrderDto } from '../dto/update-order.dto';
+import { IProduct } from 'src/product/interfaces/Product.interface';
 // import { EmployeeDto } from 'src/dtos/employee.dto';
 // import { UpdateEmployeeDto } from 'src/dtos/updateEmployee.dto';
 // import { IEmployee } from 'src/interfaces/employee.interface';
@@ -17,13 +18,33 @@ export class OrderRepository {
     @InjectModel('order') private readonly orderModel: Model<IOrder>,
     @InjectModel('orderItem')
     private readonly orderItemModel: Model<IOrderItem>,
+    @InjectModel('Product') private readonly productModel: Model<IProduct>,
     private readonly productService: ProductService,
   ) {}
 
+  // async getAllOrders(): Promise<IOrder[]> {
+  //   return await this.orderModel
+  //     .find({ __v: false })
+  //     .populate([{ path: 'orderItems', model: 'orderItem' }])
+  //     .populate([
+  //       {
+  //         path: 'orderItems.idProduct',
+  //         model: 'Product',
+  //         strictPopulate: false,
+  //       },
+  //     ]);
+  // }
+
   async getAllOrders(): Promise<IOrder[]> {
-    return await this.orderModel
-      .find({ __v: false })
-      .populate([{ path: 'orderItems', model: 'orderItem' }]);
+    return await this.orderModel.find({ __v: false }).populate({
+      path: 'orderItems',
+      model: 'orderItem',
+      populate: {
+        path: 'idProduct',
+        model: 'Product',
+        strictPopulate: false,
+      },
+    });
   }
 
   async getOrderById(id: string): Promise<IOrder> {
@@ -33,7 +54,13 @@ export class OrderRepository {
   }
 
   async getOrderItemById(id: string): Promise<IOrderItem> {
-    return await this.orderItemModel.findById(id, { __v: false });
+    return await this.orderItemModel.findById(id, { __v: false }).populate([
+      {
+        path: 'idProduct',
+        model: 'Product',
+        strictPopulate: false,
+      },
+    ]);
   }
 
   async createOrder(newOrder: CreateOrderDto): Promise<IOrder> {

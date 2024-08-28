@@ -68,7 +68,6 @@ export class OrdersService {
       if (orders.length === 0) {
         throw new NotFoundException('Não há pedidos realizados...');
       }
-
       return orders;
     } catch (error) {
       throw new BadRequestException(error.message);

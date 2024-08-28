@@ -42,7 +42,7 @@ export class OrdersController {
 
   @Get('item/:id')
   async findOrderItemById(@Param('id', validationsParamsPipe) id: string) {
-    return await this.ordersService.updateProductQuantity(id);
+    return await this.ordersService.findOrderItemById(id);
   }
 
   @Patch('bill/:id')

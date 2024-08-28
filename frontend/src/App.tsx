@@ -7,6 +7,7 @@ import Navbar from "./components/Navbar/Navbar";
 import Container from "./components/Container/Container";
 import Home from "./pages/Home/Home";
 import Products from "./pages/Products/Products";
+import Orders from "./pages/Orders/Orders";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/products' element={<Products />} />
+          <Route path='/pedidos' element={<Orders />} />
         </Routes>
       </Container>
     </BrowserRouter>

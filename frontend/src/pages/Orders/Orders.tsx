@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import styles from "./Products.module.css";
+import styles from "./Orders.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import {
@@ -9,31 +9,33 @@ import {
 import ProductCard from "../../components/ProductCard/ProductCard";
 import ModalAddProduct from "../../components/ModalProduct/ModalAddProduct";
 import ModalEditProduct from "../../components/ModalProduct/ModalEditProduct";
+import { getAllOrders } from "../../orders/slices/orders-slices";
+import OrderCard from "../../components/OrderCard/OrderCard";
 
 type Props = {};
 
-const Products = (props: Props) => {
+const Orders = (props: Props) => {
   const [query, setQuery] = useState<String>("");
   const dispatch: AppDispatch = useDispatch();
 
-  const { products } = useSelector((state: RootState) => state.product);
+  const { orders } = useSelector((state: RootState) => state.order);
 
   useEffect(() => {
-    dispatch(getAllProducts());
+    dispatch(getAllOrders());
   }, [dispatch]);
 
   const handleDelete = (id: string): void => {
     dispatch(deleteProduct(id));
   };
 
-  const filteredProducts = query
-    ? products.filter((product) => {
-        return product.title.toLowerCase().includes(query.toLowerCase());
-      })
-    : products;
+  // const filteredOrders = query
+  //   ? orders.filter((order) => {
+  //       return order.title.toLowerCase().includes(query.toLowerCase());
+  //     })
+  //   : Orders;
 
   return (
-    <div className={styles.productsContainer}>
+    <div className={styles.OrdersContainer}>
       <div className={styles.searchContainer}>
         <input
           type='search'
@@ -47,17 +49,17 @@ const Products = (props: Props) => {
         <ModalAddProduct />
       </header>
 
-      <div className={styles.productsList}>
-        {filteredProducts.length > 0 ? (
-          filteredProducts.map((product) => (
-            <ProductCard product={product} handleDelete={handleDelete} />
+      <div className={styles.OrdersList}>
+        {orders.length > 0 ? (
+          orders.map((order) => (
+            <OrderCard order={order} handleDelete={handleDelete} />
           ))
         ) : (
-          <h1>Não há itens cadastrados...</h1>
+          <h2>Não há pedidos registrados...</h2>
         )}
       </div>
     </div>
   );
 };
 
-export default Products;
+export default Orders;

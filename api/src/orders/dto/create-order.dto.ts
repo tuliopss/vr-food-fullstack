@@ -20,4 +20,6 @@ export class CreateOrderDto {
   orderTime: Date;
   paymentMethod: OrderPaymentMethod;
   paymentStatus: OrderPaymentStatus;
+  isDelivery: Boolean;
+  customer: String;
 }
